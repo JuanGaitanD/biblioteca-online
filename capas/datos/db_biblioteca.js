@@ -4,7 +4,8 @@ if (typeof window.db === "undefined") {
     console.log("Conexión exitosa a la base de datos.");
 }
 
-class biblioteca {
+// Capa de Datos - Repositorio de Biblioteca
+class BibliotecaRepository {
     constructor(db) {
         this.db = db;
     }
@@ -17,7 +18,7 @@ class biblioteca {
             snapshot.forEach(doc => {
                 libros.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice
             return libros.sort((a, b) => a.titulo.localeCompare(b.titulo));
         } catch (error) {
@@ -110,7 +111,6 @@ class biblioteca {
         }
     }
 
-
     // Métodos para usuarios
     async getUsuarios() {
         try {
@@ -119,7 +119,7 @@ class biblioteca {
             snapshot.forEach(doc => {
                 usuarios.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice
             return usuarios.sort((a, b) => a.nombre.localeCompare(b.nombre));
         } catch (error) {
@@ -224,12 +224,12 @@ class biblioteca {
             const snapshot = await this.db.collection('prestamos')
                 .where('fechaDevolucion', '==', null)
                 .get();
-
+            
             const prestamos = [];
             snapshot.forEach(doc => {
                 prestamos.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice compuesto
             return prestamos.sort((a, b) => {
                 const fechaA = a.fechaPrestamo?.seconds || 0;
@@ -247,12 +247,12 @@ class biblioteca {
             const snapshot = await this.db.collection('prestamos')
                 .where('fechaDevolucion', '!=', null)
                 .get();
-
+            
             const prestamos = [];
             snapshot.forEach(doc => {
                 prestamos.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice compuesto
             return prestamos.sort((a, b) => {
                 const fechaA = a.fechaDevolucion?.seconds || 0;
@@ -364,12 +364,12 @@ class biblioteca {
             const snapshot = await this.db.collection('libros')
                 .where('disponible', '==', true)
                 .get();
-
+            
             const libros = [];
             snapshot.forEach(doc => {
                 libros.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice compuesto
             return libros.sort((a, b) => a.titulo.localeCompare(b.titulo));
         } catch (error) {
@@ -383,12 +383,12 @@ class biblioteca {
             const snapshot = await this.db.collection('usuarios')
                 .where('activo', '==', true)
                 .get();
-
+            
             const usuarios = [];
             snapshot.forEach(doc => {
                 usuarios.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice compuesto
             return usuarios.sort((a, b) => a.nombre.localeCompare(b.nombre));
         } catch (error) {
@@ -396,20 +396,7 @@ class biblioteca {
             throw error;
         }
     }
-
-    // Método para mostrar mensajes de éxito/error
-    showMessage(message, type = 'success') {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-            }`;
-        messageDiv.textContent = message;
-
-        document.body.appendChild(messageDiv);
-
-        setTimeout(() => {
-            messageDiv.remove();
-        }, 3000);
-    }
 }
 
-window.biblioteca = new biblioteca(db);
+// Instancia global del repositorio
+window.bibliotecaRepository = new BibliotecaRepository(db);

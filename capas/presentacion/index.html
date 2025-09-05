@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca Online - Monolito</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'/></svg>">
+    <title>Biblioteca Online - Arquitectura por Capas</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore-compat.js"></script>
@@ -32,9 +30,8 @@
             }
         }
     </script>
-
+    
 </head>
-
 <body class="bg-gradient-to-br from-neutral-50 to-neutral-100 min-h-screen flex flex-col">
     <!-- Navigation Bar -->
     <nav class="bg-white shadow-sm border-b border-neutral-200">
@@ -42,37 +39,31 @@
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-4">
                     <!-- Back Button -->
-                    <a href="../index.html"
-                        class="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors duration-200">
+                    <a href="../index.html" class="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors duration-200">
                         <svg class="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
                     </a>
-
+                    
                     <div class="flex items-center space-x-3">
                         <svg class="w-8 h-8 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
                         <h1 class="text-xl font-bold text-neutral-800">Biblioteca Online</h1>
                     </div>
                 </div>
-
+                
                 <div class="flex items-center space-x-6">
                     <div class="hidden md:flex space-x-6">
                         <a href="index.html" class="text-neutral-600 hover:text-neutral-800 font-medium">Inicio</a>
                         <a href="libros.html" class="text-neutral-600 hover:text-neutral-800 font-medium">Libros</a>
                         <a href="usuarios.html" class="text-neutral-600 hover:text-neutral-800 font-medium">Usuarios</a>
-                        <a href="prestamos.html"
-                            class="text-neutral-600 hover:text-neutral-800 font-medium">Préstamos</a>
+                        <a href="prestamos.html" class="text-neutral-600 hover:text-neutral-800 font-medium">Préstamos</a>
                     </div>
                     <div class="md:hidden">
                         <button class="text-neutral-600 hover:text-neutral-800">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16M4 18h16"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                             </svg>
                         </button>
                     </div>
@@ -89,24 +80,21 @@
             <p class="text-xl text-neutral-600 max-w-3xl mx-auto mb-12">
                 Gestiona los recursos de la biblioteca de forma fácil y rápida.
             </p>
-
+            
             <!-- Quick Access Buttons -->
             <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <a href="libros.html"
-                    class="inline-flex items-center px-8 py-4 bg-neutral-800 text-white font-medium rounded-lg hover:bg-neutral-700 transition-colors duration-200 shadow-lg hover:shadow-xl">
+                <a href="libros.html" 
+                   class="inline-flex items-center px-8 py-4 bg-neutral-800 text-white font-medium rounded-lg hover:bg-neutral-700 transition-colors duration-200 shadow-lg hover:shadow-xl">
                     <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
                     Ver Libros
                 </a>
-
-                <a href="prestamos.html"
-                    class="inline-flex items-center px-8 py-4 bg-white text-neutral-800 font-medium rounded-lg border-2 border-neutral-300 hover:border-neutral-400 transition-colors duration-200 shadow-lg hover:shadow-xl">
+                
+                <a href="prestamos.html" 
+                   class="inline-flex items-center px-8 py-4 bg-white text-neutral-800 font-medium rounded-lg border-2 border-neutral-300 hover:border-neutral-400 transition-colors duration-200 shadow-lg hover:shadow-xl">
                     <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                     </svg>
                     Ver Préstamos
                 </a>
@@ -118,22 +106,17 @@
             <div class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 text-center">
                 <div class="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <svg class="w-6 h-6 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
                 </div>
                 <h3 class="font-semibold text-neutral-800 mb-2">Gestión de Libros</h3>
-                <p class="text-neutral-600 text-sm">Agrega, edita y administra el catálogo de libros de la biblioteca
-                </p>
+                <p class="text-neutral-600 text-sm">Agrega, edita y administra el catálogo de libros de la biblioteca</p>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 text-center">
                 <div class="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <svg class="w-6 h-6 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
-                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                     </svg>
                 </div>
                 <h3 class="font-semibold text-neutral-800 mb-2">Gestión de Usuarios</h3>
@@ -143,8 +126,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 text-center">
                 <div class="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <svg class="w-6 h-6 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                     </svg>
                 </div>
                 <h3 class="font-semibold text-neutral-800 mb-2">Control de Préstamos</h3>
@@ -157,12 +139,16 @@
     <footer class="bg-white border-t border-neutral-200 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
             <div class="text-center text-neutral-600 text-sm sm:text-base">
-                <p>&copy; 2024 Biblioteca Online - Arquitectura Monolítica</p>
+                <p>&copy; 2024 Biblioteca Online - Arquitectura por Capas</p>
             </div>
         </div>
     </footer>
 </body>
-
 </html>
-<script src="conexion.js"></script>
-<script src="db_biblioteca.js"></script>
+<!-- Arquitectura por Capas - Scripts -->
+<script src="../datos/conexion.js"></script>
+<script src="../datos/db_biblioteca.js"></script>
+<script src="../negocio/libroService.js"></script>
+<script src="../negocio/usuarioService.js"></script>
+<script src="../negocio/prestamoService.js"></script>
+<script src="../aplicacion/bibliotecaApp.js"></script>
