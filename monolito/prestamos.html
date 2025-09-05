@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Préstamos - Biblioteca Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore-compat.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neutral': {
+                            50: '#fafafa',
+                            100: '#f5f5f5',
+                            200: '#e5e5e5',
+                            300: '#d4d4d4',
+                            400: '#a3a3a3',
+                            500: '#737373',
+                            600: '#525252',
+                            700: '#404040',
+                            800: '#262626',
+                            900: '#171717',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-neutral-50 to-neutral-100 min-h-screen flex flex-col">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-sm border-b border-neutral-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-8">
+                    <h1 class="text-xl font-bold text-neutral-800">Biblioteca Online</h1>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="index.html" class="text-neutral-600 hover:text-neutral-800 font-medium">Inicio</a>
+                        <a href="libros.html" class="text-neutral-600 hover:text-neutral-800 font-medium">Libros</a>
+                        <a href="usuarios.html" class="text-neutral-600 hover:text-neutral-800 font-medium">Usuarios</a>
+                        <a href="prestamos.html" class="text-neutral-800 font-medium border-b-2 border-neutral-800">Préstamos</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-neutral-600 hover:text-neutral-800">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-neutral-800 mb-2">Gestión de Préstamos</h1>
+            <p class="text-neutral-600">Administra los préstamos y devoluciones de libros</p>
+        </div>
+
+        <!-- Add Loan Form -->
+        <div class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 mb-8">
+            <h3 class="text-xl font-semibold text-neutral-800 mb-6">Registrar Nuevo Préstamo</h3>
+            <form id="addLoanForm" class="space-y-4">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="usuario" class="block text-sm font-medium text-neutral-700 mb-2">Usuario</label>
+                        <select id="usuario" name="usuario" required
+                                class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent">
+                            <option value="">Seleccionar Usuario</option>
+                            <!-- Users will be dynamically loaded here -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="libro" class="block text-sm font-medium text-neutral-700 mb-2">Libro</label>
+                        <select id="libro" name="libro" required
+                                class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent">
+                            <option value="">Seleccionar Libro</option>
+                            <!-- Books will be dynamically loaded here -->
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" 
+                            class="px-6 py-2 bg-neutral-800 text-white font-medium rounded-lg hover:bg-neutral-700 transition-colors duration-200">
+                        Registrar Préstamo
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Active Loans List -->
+        <div class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6">
+            <h3 class="text-xl font-semibold text-neutral-800 mb-6">Préstamos Activos</h3>
+            
+            <!-- Loading State -->
+            <div id="loadingLoans" class="text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-800"></div>
+                <p class="mt-2 text-neutral-600">Cargando préstamos...</p>
+            </div>
+
+            <!-- Loans Table -->
+            <div id="loansTable" class="hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-neutral-200">
+                        <thead class="bg-neutral-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Libro</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Usuario</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Fecha de Préstamo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loansTableBody" class="bg-white divide-y divide-neutral-200">
+                            <!-- Loans will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyLoans" class="hidden text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-neutral-900">No hay préstamos activos</h3>
+                <p class="mt-1 text-sm text-neutral-500">Los préstamos aparecerán aquí cuando se registren.</p>
+            </div>
+        </div>
+
+        <!-- Loan History -->
+        <div class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 mt-8">
+            <h3 class="text-xl font-semibold text-neutral-800 mb-6">Historial de Préstamos</h3>
+            
+            <!-- Loading State -->
+            <div id="loadingHistory" class="text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-800"></div>
+                <p class="mt-2 text-neutral-600">Cargando historial...</p>
+            </div>
+
+            <!-- History Table -->
+            <div id="historyTable" class="hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-neutral-200">
+                        <thead class="bg-neutral-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Libro</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Usuario</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Fecha de Préstamo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Fecha de Devolución</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="bg-white divide-y divide-neutral-200">
+                            <!-- History will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Empty History State -->
+            <div id="emptyHistory" class="hidden text-center py-12">
+                <svg class="mx-auto h-12 w-12 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-neutral-900">No hay historial</h3>
+                <p class="mt-1 text-sm text-neutral-500">El historial de préstamos aparecerá aquí.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-neutral-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            <div class="text-center text-neutral-600 text-sm sm:text-base">
+                <p>&copy; 2024 Biblioteca Online - Arquitectura Monolítica</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Loan management functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize and load data
+            loadUsers();
+            loadBooks();
+            loadLoans();
+            loadLoanHistory();
+            
+            // Add loan form submission
+            document.getElementById('addLoanForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addLoan();
+            });
+        });
+
+        async function loadUsers() {
+            try {
+                const usuarios = await window.biblioteca.getUsuariosActivos();
+                const userSelect = document.getElementById('usuario');
+                
+                // Clear existing options except the first one
+                userSelect.innerHTML = '<option value="">Seleccionar Usuario</option>';
+                
+                usuarios.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = `${user.nombre} (${user.email})`;
+                    userSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading users:', error);
+                window.biblioteca.showMessage('Error al cargar los usuarios', 'error');
+            }
+        }
+
+        async function loadBooks() {
+            try {
+                const libros = await window.biblioteca.getLibrosDisponibles();
+                const bookSelect = document.getElementById('libro');
+                
+                // Clear existing options except the first one
+                bookSelect.innerHTML = '<option value="">Seleccionar Libro</option>';
+                
+                libros.forEach(book => {
+                    const option = document.createElement('option');
+                    option.value = book.id;
+                    option.textContent = `${book.titulo} - ${book.autor}`;
+                    bookSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading books:', error);
+                window.biblioteca.showMessage('Error al cargar los libros', 'error');
+            }
+        }
+
+        async function loadLoans() {
+            try {
+                const prestamos = await window.biblioteca.getPrestamosActivos();
+                displayLoans(prestamos);
+            } catch (error) {
+                console.error('Error loading loans:', error);
+                window.biblioteca.showMessage('Error al cargar los préstamos', 'error');
+                document.getElementById('loadingLoans').classList.add('hidden');
+                document.getElementById('emptyLoans').classList.remove('hidden');
+            }
+        }
+
+        function displayLoans(prestamos) {
+            const loadingDiv = document.getElementById('loadingLoans');
+            const tableDiv = document.getElementById('loansTable');
+            const emptyDiv = document.getElementById('emptyLoans');
+            const tableBody = document.getElementById('loansTableBody');
+
+            loadingDiv.classList.add('hidden');
+
+            if (prestamos.length === 0) {
+                emptyDiv.classList.remove('hidden');
+                tableDiv.classList.add('hidden');
+            } else {
+                emptyDiv.classList.add('hidden');
+                tableDiv.classList.remove('hidden');
+                
+                tableBody.innerHTML = '';
+                prestamos.forEach(prestamo => {
+                    const fechaPrestamo = new Date(prestamo.fechaPrestamo.seconds * 1000).toLocaleDateString();
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">${prestamo.libroTitulo}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${prestamo.usuarioNombre}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${fechaPrestamo}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                Activo
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="returnBook('${prestamo.id}')" 
+                                    class="text-green-600 hover:text-green-900">
+                                Devolver
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+        }
+
+        async function loadLoanHistory() {
+            try {
+                const historial = await window.biblioteca.getHistorialPrestamos();
+                displayLoanHistory(historial);
+            } catch (error) {
+                console.error('Error loading loan history:', error);
+                window.biblioteca.showMessage('Error al cargar el historial', 'error');
+                document.getElementById('loadingHistory').classList.add('hidden');
+                document.getElementById('emptyHistory').classList.remove('hidden');
+            }
+        }
+
+        function displayLoanHistory(historial) {
+            const loadingDiv = document.getElementById('loadingHistory');
+            const tableDiv = document.getElementById('historyTable');
+            const emptyDiv = document.getElementById('emptyHistory');
+            const tableBody = document.getElementById('historyTableBody');
+
+            loadingDiv.classList.add('hidden');
+
+            if (historial.length === 0) {
+                emptyDiv.classList.remove('hidden');
+                tableDiv.classList.add('hidden');
+            } else {
+                emptyDiv.classList.add('hidden');
+                tableDiv.classList.remove('hidden');
+                
+                tableBody.innerHTML = '';
+                historial.forEach(prestamo => {
+                    const fechaPrestamo = new Date(prestamo.fechaPrestamo.seconds * 1000).toLocaleDateString();
+                    const fechaDevolucion = new Date(prestamo.fechaDevolucion.seconds * 1000).toLocaleDateString();
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">${prestamo.libroTitulo}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${prestamo.usuarioNombre}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${fechaPrestamo}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${fechaDevolucion}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                Devuelto
+                            </span>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+        }
+
+        async function addLoan() {
+            const usuarioId = document.getElementById('usuario').value;
+            const libroId = document.getElementById('libro').value;
+            
+            if (!usuarioId || !libroId) {
+                window.biblioteca.showMessage('Por favor selecciona un usuario y un libro', 'error');
+                return;
+            }
+
+            try {
+                await window.biblioteca.addPrestamo({ usuarioId, libroId });
+                window.biblioteca.showMessage('Préstamo registrado exitosamente');
+                document.getElementById('addLoanForm').reset();
+                loadLoans(); // Reload the loans list
+                loadLoanHistory(); // Reload the history
+                loadBooks(); // Reload available books
+            } catch (error) {
+                window.biblioteca.showMessage(error.message, 'error');
+            }
+        }
+
+        async function returnBook(prestamoId) {
+            if (confirm('¿Estás seguro de que quieres marcar este libro como devuelto?')) {
+                try {
+                    await window.biblioteca.devolverPrestamo(prestamoId);
+                    window.biblioteca.showMessage('Libro devuelto exitosamente');
+                    loadLoans(); // Reload the loans list
+                    loadLoanHistory(); // Reload the history
+                    loadBooks(); // Reload available books
+                } catch (error) {
+                    window.biblioteca.showMessage(error.message, 'error');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+<script src="conexion.js"></script>
+<script src="db_biblioteca.js"></script>
