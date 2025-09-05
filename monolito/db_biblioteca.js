@@ -4,7 +4,7 @@ if (typeof window.db === "undefined") {
     console.log("Conexión exitosa a la base de datos.");
 }
 
-class FirebaseService {
+class biblioteca {
     constructor(db) {
         this.db = db;
     }
