@@ -12,6 +12,7 @@ class biblioteca {
     // Métodos para libros
     async getLibros() {
         try {
+            if (window.showLoader) window.showLoader('Cargando libros...');
             const snapshot = await this.db.collection('libros').get();
             const libros = [];
             snapshot.forEach(doc => {
@@ -23,11 +24,14 @@ class biblioteca {
         } catch (error) {
             console.error('Error al obtener libros:', error);
             throw error;
+        } finally {
+            if (window.hideLoader) window.hideLoader();
         }
     }
 
     async addLibro(libro) {
         try {
+            if (window.showLoader) window.showLoader('Agregando libro...');
             // Validar datos del libro
             if (!libro.titulo || !libro.autor) {
                 throw new Error('Título y autor son requeridos.');
@@ -56,6 +60,8 @@ class biblioteca {
         } catch (error) {
             console.error('Error al agregar libro:', error);
             throw error;
+        } finally {
+            if (window.hideLoader) window.hideLoader();
         }
     }
 
@@ -114,22 +120,26 @@ class biblioteca {
     // Métodos para usuarios
     async getUsuarios() {
         try {
+            if (window.showLoader) window.showLoader('Cargando usuarios...');
             const snapshot = await this.db.collection('usuarios').get();
             const usuarios = [];
             snapshot.forEach(doc => {
                 usuarios.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice
             return usuarios.sort((a, b) => a.nombre.localeCompare(b.nombre));
         } catch (error) {
             console.error('Error al obtener usuarios:', error);
             throw error;
+        } finally {
+            if (window.hideLoader) window.hideLoader();
         }
     }
 
     async addUsuario(usuario) {
         try {
+            if (window.showLoader) window.showLoader('Agregando usuario...');
             if (!usuario.nombre || !usuario.email) {
                 throw new Error('Nombre y email son requeridos.');
             }
@@ -161,6 +171,8 @@ class biblioteca {
         } catch (error) {
             console.error('Error al agregar usuario:', error);
             throw error;
+        } finally {
+            if (window.hideLoader) window.hideLoader();
         }
     }
 
@@ -221,15 +233,16 @@ class biblioteca {
     // Métodos para préstamos
     async getPrestamosActivos() {
         try {
+            if (window.showLoader) window.showLoader('Cargando préstamos activos...');
             const snapshot = await this.db.collection('prestamos')
                 .where('fechaDevolucion', '==', null)
                 .get();
-
+            
             const prestamos = [];
             snapshot.forEach(doc => {
                 prestamos.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice compuesto
             return prestamos.sort((a, b) => {
                 const fechaA = a.fechaPrestamo?.seconds || 0;
@@ -239,20 +252,23 @@ class biblioteca {
         } catch (error) {
             console.error('Error al obtener préstamos activos:', error);
             throw error;
+        } finally {
+            if (window.hideLoader) window.hideLoader();
         }
     }
 
     async getHistorialPrestamos() {
         try {
+            if (window.showLoader) window.showLoader('Cargando historial de préstamos...');
             const snapshot = await this.db.collection('prestamos')
                 .where('fechaDevolucion', '!=', null)
                 .get();
-
+            
             const prestamos = [];
             snapshot.forEach(doc => {
                 prestamos.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice compuesto
             return prestamos.sort((a, b) => {
                 const fechaA = a.fechaDevolucion?.seconds || 0;
@@ -262,11 +278,14 @@ class biblioteca {
         } catch (error) {
             console.error('Error al obtener historial de préstamos:', error);
             throw error;
+        } finally {
+            if (window.hideLoader) window.hideLoader();
         }
     }
 
     async addPrestamo(prestamo) {
         try {
+            if (window.showLoader) window.showLoader('Registrando préstamo...');
             if (!prestamo.libroId || !prestamo.usuarioId) {
                 throw new Error('ID del libro y usuario son requeridos.');
             }
@@ -313,11 +332,14 @@ class biblioteca {
         } catch (error) {
             console.error('Error al agregar préstamo:', error);
             throw error;
+        } finally {
+            if (window.hideLoader) window.hideLoader();
         }
     }
 
     async devolverPrestamo(prestamoId) {
         try {
+            if (window.showLoader) window.showLoader('Devolviendo libro...');
             if (!prestamoId) {
                 throw new Error('ID del préstamo es requerido.');
             }
@@ -341,6 +363,8 @@ class biblioteca {
         } catch (error) {
             console.error('Error al devolver préstamo:', error);
             throw error;
+        } finally {
+            if (window.hideLoader) window.hideLoader();
         }
     }
 
@@ -361,39 +385,45 @@ class biblioteca {
     // Métodos auxiliares
     async getLibrosDisponibles() {
         try {
+            if (window.showLoader) window.showLoader('Cargando libros disponibles...');
             const snapshot = await this.db.collection('libros')
                 .where('disponible', '==', true)
                 .get();
-
+            
             const libros = [];
             snapshot.forEach(doc => {
                 libros.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice compuesto
             return libros.sort((a, b) => a.titulo.localeCompare(b.titulo));
         } catch (error) {
             console.error('Error al obtener libros disponibles:', error);
             throw error;
+        } finally {
+            if (window.hideLoader) window.hideLoader();
         }
     }
 
     async getUsuariosActivos() {
         try {
+            if (window.showLoader) window.showLoader('Cargando usuarios activos...');
             const snapshot = await this.db.collection('usuarios')
                 .where('activo', '==', true)
                 .get();
-
+            
             const usuarios = [];
             snapshot.forEach(doc => {
                 usuarios.push({ id: doc.id, ...doc.data() });
             });
-
+            
             // Ordenar en JavaScript para evitar necesidad de índice compuesto
             return usuarios.sort((a, b) => a.nombre.localeCompare(b.nombre));
         } catch (error) {
             console.error('Error al obtener usuarios activos:', error);
             throw error;
+        } finally {
+            if (window.hideLoader) window.hideLoader();
         }
     }
 
